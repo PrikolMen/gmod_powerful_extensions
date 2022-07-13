@@ -166,7 +166,3 @@ end
 function util.GetLightStyles()
     return stringtable.GetStrings( "lightstyles" )
 end
-
--- GetCSLuaFiles() -- получить все файлы которые отправят клиенту ( моя функция )
--- RemoveCSLuaFile( path ) -- удалить файл из отправки клиенту ( моя функция )
--- AddCSLuaFile( path ) -- добавить файл для отправки клиенту ( гарис модь )
