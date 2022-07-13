@@ -4,6 +4,10 @@ if not pcall( require, "stringtable" ) or (stringtable == nil) then
     return
 end
 
+local function info( str )
+    MsgN( "[stringtable] " .. str )
+end
+
 function stringtable.GetAll()
     local tables = {}
     for i = 0, stringtable.GetCount() - 1 do
@@ -59,7 +63,7 @@ function stringtable.AddTo( name, key, str )
     end
 end
 
-function stringtable.RemoveFrom( name, key )
+function stringtable.RemoveFrom( name, key, print_info )
     assert( isstring( name ), "String table name must be a string!" )
 
     if isstring( key ) then
@@ -74,8 +78,22 @@ function stringtable.RemoveFrom( name, key )
                 for num = 0, #strings do
                     local str = strings[ num ]
                     if (str == nil) then continue end
-                    if (str == key) then continue end
-                    if (str:match( "[^%s]" ) == nil) then continue end
+                    if str:match( key ) then
+                        if (print_info == true) then
+                            info( "Removed `" .. str .. "` from `" .. name .. "`" )
+                        end
+
+                        continue
+                    end
+
+                    if (str:match( "[^%s]" ) == nil) then
+                        if (print_info == true) then
+                            info( "Removed empty `" .. str .. "` from `" .. name .. "`" )
+                        end
+
+                        continue
+                    end
+
                     data:AddString( true, str )
                 end
 
@@ -106,7 +124,7 @@ end
 
 function util.RemoveNetworkString( str )
     if isstring( str ) then
-        stringtable.RemoveFrom( "networkstring", str )
+        stringtable.RemoveFrom( "networkstring", str, true )
     end
 end
 
@@ -115,13 +133,15 @@ function GetCSLuaFiles()
     return stringtable.GetStrings( "client_lua_files" )
 end
 
-function ClearSCLuaFiles()
+function ClearCSLuaFiles()
     stringtable.Clear( "client_lua_files" )
+    info( "Warning: All cs lua files list cleanuped!" )
 end
 
 function RemoveCSLuaFile( path )
     if isstring( path ) then
-        stringtable.RemoveFrom( "client_lua_files", path )
+        info( "Remove from `client_lua_files`: " .. path )
+        stringtable.RemoveFrom( "client_lua_files", path, true )
     end
 end
 
@@ -131,6 +151,7 @@ function util.GetPrecacheModels()
 end
 
 function util.ClearPrecacheModels()
+    info( "Models cache is empty now!" )
     stringtable.Clear( "modelprecache" )
 end
 
@@ -140,6 +161,7 @@ function util.GetPrecacheSounds()
 end
 
 function util.ClearPrecacheSounds()
+    info( "Sound cache is empty now!" )
     stringtable.Clear( "soundprecache" )
 end
 
@@ -149,6 +171,7 @@ function util.GetPrecacheDecals()
 end
 
 function util.ClearPrecacheDecals()
+    info( "Decals cache is empty now!" )
     stringtable.Clear( "decalprecache" )
 end
 
